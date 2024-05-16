@@ -1,6 +1,7 @@
 import AppHeader from "../appHeader/AppHeader";
 import AccNavigation from "../accNavigation/AccNavigation";
 import AccOffices from "../accOffices/AccOffices"
+import ModalOffice from "../modalOffice/ModalOffice";
 
 const AddedOffices = (props) => {
     return (
@@ -10,6 +11,7 @@ const AddedOffices = (props) => {
                 <AccNavigation userRole={props.userRole}/>
                 <AccOffices userRole={props.userRole}/>
             </div>
+            <ModalOffice/>
         </>  
     )
 }

@@ -60,7 +60,7 @@ const Register = () => {
                 name="telephone"
                 className="form-control"
                 type="tel"
-                pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
+                pattern="[3][7][5][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}"
                 placeholder="375-XX-XXX-XX-XX"
                 required
                 />

@@ -22,7 +22,7 @@ const AccUsersList = () => {
                     <h5>Заблокирован</h5>
                 </div>
                 <div className="wrapper-user-controls text-center col-12 col-xxl-2 py-2 py-xxl-0 px-2 d-flex align-items-start justify-content-center">
-                    <div className="btn btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0"><i class="bi fa-lg bi-sliders2"></i></div>
+                    <div className="btn btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0" data-bs-toggle="modal" data-bs-target="#modalUser"><i class="bi fa-lg bi-sliders2"></i></div>
                     <div className="btn btn-delete-office btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0"><i className="bi fa-lg bi-trash3"></i></div>
                 </div>
             </div>
@@ -44,7 +44,7 @@ const AccUsersList = () => {
                     <h5>Заблокирован</h5>
                 </div>
                 <div className="wrapper-user-controls text-center col-12 col-xxl-2 py-2 py-xxl-0 px-2 d-flex align-items-start justify-content-center">
-                    <div className="btn btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0"><i class="bi fa-lg bi-sliders2"></i></div>
+                    <div className="btn btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0" data-bs-toggle="modal" data-bs-target="#modalUser"><i class="bi fa-lg bi-sliders2"></i></div>
                     <div className="btn btn-delete-office btn-outline-dark col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0"><i className="bi fa-lg bi-trash3"></i></div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import AppHeader from "../appHeader/AppHeader"
 import AccNavigation from "../accNavigation/AccNavigation"
 import AccUsersList from "../accUsersList/AccUsersList"
+import ModalUser from "../modalUser/ModalUser"
 
 const Users = (props) => {
 
@@ -11,6 +12,7 @@ const Users = (props) => {
                 <AccNavigation userRole={props.userRole}/>
                 <AccUsersList/>
             </div>
+            <ModalUser/>
         </>
     )
 }

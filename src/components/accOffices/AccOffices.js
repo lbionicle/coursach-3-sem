@@ -23,11 +23,11 @@ const AccOffices = (props) => {
                 <div className="office-controls col-12 col-xxl-2 py-2 px-xxl-2 py-xxl-0 text-center d-flex align-items-start justify-content-center">
                     {props.userRole === "User" ?
                     <>
-                        <div className="btn btn-outline-dark col-2 col-md-2 col-xxl-4 mx-2 py-3 rounded-0"><i class="bi fa-lg bi-eye"></i></div>
+                        <div className="btn btn-outline-dark col-2 col-md-2 col-xxl-4 mx-2 py-3 rounded-0" data-bs-toggle="modal" data-bs-target="#modalOffice"><i class="bi fa-lg bi-eye"></i></div>
                     </>
                     :
                     <>
-                        <div className="btn btn-outline-dark col-2 col-md-2 col-xxl-4 mx-2 py-3 rounded-0"><i class="bi fa-lg bi-sliders2"></i></div>
+                        <div className="btn btn-outline-dark col-2 col-md-2 col-xxl-4 mx-2 py-3 rounded-0" data-bs-toggle="modal" data-bs-target="#modalOffice"><i class="bi fa-lg bi-sliders2"></i></div>
                     </>
                     }
                     <div className="btn btn-delete-office btn-outline-dark col-2 col-md-2 col-xxl-4 mx-2 py-3 rounded-0"><i className="bi fa-lg bi-trash3"></i></div>
