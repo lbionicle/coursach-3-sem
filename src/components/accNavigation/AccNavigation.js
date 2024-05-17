@@ -56,7 +56,7 @@ const AdminNavigation = () => {
             </NavLink>
             <NavLink to={"/personal-account/personal-users"}>
             {({ isActive }) => (
-                <li className={isActive ? "list-group-item list-active" : "list-group-item"}><i className="bi fa-lg bi-people me-1"></i>Пользователь</li>
+                <li className={isActive ? "list-group-item list-active" : "list-group-item"}><i className="bi fa-lg bi-people me-1"></i>Пользователи</li>
             )}
             </NavLink>
             <li className="list-group-item download-report"><i className="bi fa-lg bi-filetype-xlsx me-1"></i>Выгрузить отчёт</li>

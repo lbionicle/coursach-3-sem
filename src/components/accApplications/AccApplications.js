@@ -32,14 +32,14 @@ const AccApplications = (props) => {
                             <h5 style={{textDecoration : "underline"}}>В рассмотрении</h5>
                         </div>
                         <div className="wrapper-application-controls col-12 col-xxl-1 text-start">
-                            <div className="btn btn-outline-dark my-2 rounded-0 col-12 col-xxl-9"><i className="bi fa-lg bi-x-lg"></i></div>
+                            <div className="btn btn-outline-danger my-2 rounded-0 col-12 col-xxl-8"><i className="bi fa-lg bi-x-lg"></i></div>
                         </div>
                     </>
                     :
                     <>
-                        <div className="wrapper-application-controls col-7 col-xxl-3 text-start py-2">
-                            <div className="btn btn-submit-application btn-outline-dark rounded-0 col-4 col-sm-3 col-xxl-5"><i style={{fontSize : "1.4em", lineHeight: ".09em", verticalAlign : "-0.1em"}} className="bi fa-lg bi-check2"></i></div>
-                            <div className="btn btn-cancel-application btn-outline-dark rounded-0 col-4 col-sm-3 col-xxl-5 ms-2"><i className="bi fa-lg bi-x-lg"></i></div>
+                        <div className="wrapper-application-controls col-7 col-xxl-3 text-start text-xxl-center py-2">
+                            <div className="btn btn-submit-application btn-outline-success rounded-0 col-4 col-sm-3 col-xxl-4"><i style={{fontSize : "1.4em", lineHeight: ".09em", verticalAlign : "-0.1em"}} className="bi fa-lg bi-check2"></i></div>
+                            <div className="btn btn-cancel-application btn-outline-danger rounded-0 col-4 col-sm-3 col-xxl-4 ms-2"><i className="bi fa-lg bi-x-lg"></i></div>
                         </div>
                     </>
                 }

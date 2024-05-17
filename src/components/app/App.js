@@ -5,7 +5,7 @@ import AuthUser from "../authUser/AuthUser";
 import { PersonalInfo, Applications, AddedOffices, Users} from "../pages"
 
 const App = () => {
-  const [userRole, setUserRole] = useState("U")
+  const [userRole, setUserRole] = useState("Usr")
 
   return (
     <Router>

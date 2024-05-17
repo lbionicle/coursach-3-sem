@@ -2,6 +2,7 @@ import AppHeader from "../appHeader/AppHeader"
 import AccNavigation from "../accNavigation/AccNavigation"
 import AccUsersList from "../accUsersList/AccUsersList"
 import ModalUser from "../modalUser/ModalUser"
+import AddModal from "../addModal/AddModal"
 
 const Users = (props) => {
 
@@ -13,6 +14,7 @@ const Users = (props) => {
                 <AccUsersList/>
             </div>
             <ModalUser/>
+            <AddModal response={"Users"}/>
         </>
     )
 }
