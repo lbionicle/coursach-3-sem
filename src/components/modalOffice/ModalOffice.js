@@ -156,8 +156,8 @@ const AdminModal = () => {
                     <label for="input-price" class="form-label">Цена<span className="text-danger">*</span></label>
                     <input class="form-control" type="number" name="price" id="input-price" required></input>
                 </div>
-                <div className="modal-body-controls mt-3">
-                    <button type="submit" class="btn btn-success">Сохранить изменения</button>
+                <div className="modal-body-controls col-12 mt-3">
+                    <button type="submit" class="btn btn-success col-12">Сохранить изменения</button>
                 </div>
             </form>
         </>

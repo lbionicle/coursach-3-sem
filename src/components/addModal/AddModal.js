@@ -50,8 +50,8 @@ const AddOffice = () => {
                     <label for="input-price" class="form-label">Цена<span className="text-danger">*</span></label>
                     <input class="form-control" type="number" name="price" id="input-price" required></input>
                 </div>
-                <div className="modal-body-controls mt-3">
-                    <button type="submit" class="btn btn-success">Добавить</button>
+                <div className="modal-body-controls col-12 mt-3">
+                    <button type="submit" class="btn btn-success col-12">Добавить</button>
                 </div>
             </form>
         </>
@@ -101,10 +101,6 @@ const AddUser = () => {
                         placeholder="Пароль"
                         required
                     />
-                </div>
-                <div className="btn-group input-container col-12 p-2 text-center" role="group">
-                    <div type="button" className="btn btn-outline-success col-6 active">Разблокирован</div>
-                    <div type="button" className="btn btn-outline-danger col-6">Заблокирован</div>
                 </div>
                 <div className="form-controls text-center col-12 mt-4 px-2">
                     <button className="btn btn-submit btn-success text-center col-12" type="submit">Добавить</button>

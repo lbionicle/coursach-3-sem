@@ -28,6 +28,8 @@ const AccUsersList = () => {
                         <div className="btn btn-delete-office btn-outline-danger col-2 col-xxl-5 mx-2 mx-xxl-1 py-3 rounded-0"><i className="bi fa-lg bi-trash3"></i></div>
                     </div>
                 </div>
+            </div>
+            <div className="users-wrapper wrapper col-12 mt-2">
                 <div className="wrapper-user col-12 d-flex flex-wrap align-items-start justify-content-between">
                     <div className="wrapper-user-id col-12 col-md-6 col-xxl-1 py-2 py-xxl-0 px-2">
                         <h6>Id:</h6>

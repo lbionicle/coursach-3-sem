@@ -60,7 +60,7 @@ const Register = () => {
                 name="telephone"
                 className="form-control"
                 type="tel"
-                pattern="[3][7][5][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}"
+                pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
                 placeholder="375-XX-XXX-XX-XX"
                 required
                 />
@@ -79,7 +79,7 @@ const Register = () => {
                 required
             />
             <div className="form-controls w-100 text-center mt-4">
-                <button className="btn btn-submit btn-success col-8 col-xxl-5 text-center" type="submit">Зарегистрироваться</button>
+                <button className="btn btn-submit btn-success col-9 col-xxl-5 text-center" type="submit">Зарегистрироваться</button>
             </div>
         </form>
     )
