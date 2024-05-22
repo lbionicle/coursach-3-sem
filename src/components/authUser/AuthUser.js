@@ -1,8 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
+import useServices from "../../services/Services"
+
 import "./authUser.scss"
 
 const AuthUser = () => {
-    const [stage, setStage] = useState("login")
+    const [stage, setStage] = useState("login");
+
+    const { login, register } = useServices();
+
+    const regUser = (e) => {
+        e.preventDefault();
+        
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        data.age = +data.age
+        console.log(data);
+        register(data);
+    };
+
+    const loginUser = (e) => {
+        e.preventDefault();
+        
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        login(data);
+    };
 
     return (
         <div className="auth-wrapper">
@@ -20,15 +42,15 @@ const AuthUser = () => {
                         onClick={() => setStage("register")}    
                     >Регистрация</div>
                 </div>
-                {stage === "login" ? <Login/> : <Register/>}
+                {stage === "login" ? <Login loginUser={loginUser}/> : <Register regUser={regUser}/>}
             </div>
         </div>
     )
 }
 
-const Login = () => {
+const Login = (props) => {
     return (
-        <form id="login-user" action="" method="post">
+        <form onSubmit={props.loginUser} id="login-user" action="" method="post">
             <label htmlFor="email">Почта <span className="text-danger">*</span></label>
             <input name="email" className="form-control" type="email" placeholder="Example@gmail.com" required/>
             <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
@@ -48,16 +70,16 @@ const Login = () => {
     )
 }
 
-const Register = () => {
+const Register = (props) => {
     return (
-        <form id="reg-user" action="" method="post">
+        <form onSubmit={props.regUser} id="reg-user" action="" method="post">
             <label htmlFor="lastName">Фамилия <span className="text-danger">*</span></label>
             <input name="lastName" className="form-control" type="text" placeholder="Иванов" required/>
             <label htmlFor="firstName">Имя <span className="text-danger">*</span></label>
             <input name="firstName" className="form-control" type="text" placeholder="Иван" required/>
             <label htmlFor="telephone">Номер <span className="text-danger">*</span></label>
             <input
-                name="telephone"
+                name="tel"
                 className="form-control"
                 type="tel"
                 pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"

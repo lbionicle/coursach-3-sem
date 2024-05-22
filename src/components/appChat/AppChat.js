@@ -58,7 +58,7 @@ const AppChat = () => {
             if (currentMessage.length < FAQ[clickedFAQ.current[clickedFAQ.current.length - 1]].length) {
                 timerId = setTimeout(() => {
                     setCurrentMessage(FAQ[clickedFAQ.current[clickedFAQ.current.length - 1]].slice(0, currentMessage.length + 1));
-                }, 30);
+                }, 25);
             } else {
                 typingRef.current = false;
                 setChatMessages(chatMessages => {
@@ -143,7 +143,7 @@ const AppChat = () => {
         const {minArea, maxArea, minPrice, maxPrice} = Object.fromEntries(new FormData(e.target).entries());
 
         setBaseButtons();
-        setChatMessages(chatMessages => [...chatMessages, ...renderMessage([{role : "User", message : `Минимальная площадь: ${minArea} м²`}, {role : "User", message : `Максимальная площадь: ${maxArea} м²`}, {role : "User", message : `Минимальная цена: ${minPrice}`}, {role : "User", message : `Минимальная цена: ${minPrice}`}, {role : "Chat", message : "Результаты поиска:"}])]);
+        setChatMessages(chatMessages => [...chatMessages, ...renderMessage([{role : "User", message : <>Минимальная площадь: {minArea} м²<br />Максимальная площадь: {maxArea} м²<br />Минимальная цена: {minPrice}<br />Максимальная цена: {maxPrice}<br /></>}, {role : "Chat", message : "Результаты поиска:"}])]);
 
 
         console.log(minArea, maxArea, minPrice, maxPrice)

@@ -1,75 +1,150 @@
-import "./addModal.scss"
+import { useState, useRef } from "react";
+import useServices from "../../services/Services";
+import "./addModal.scss";
 
-const AddModal = (props) => {
+const AddModal = ({ setAddedOffice, response }) => {
+    const [photos, setPhotos] = useState([]);
+    const fileInputRef = useRef(null);
+
+    const { addOffice } = useServices();
+
+    const onSubmitOffice = (e) => {
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        data.price = +data.price;
+        data.area = +data.area;
+        data.photos = photos.map(photo => photo.base64);
+
+        addOffice(data);
+        setAddedOffice(prev => !prev);
+
+        e.target.reset();
+        setPhotos([]);
+    };
 
     return (
         <>
-            <div className="modal" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+            <div className="modal" id="modalAdd" tabIndex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <div className="modal-body">
-                            <div style={{cursor: "pointer", top: "10px", right: "20px", borderRadius : "0.3rem"}} className="btn btn-outline-dark position-absolute" data-bs-dismiss="modal" aria-label="close"><i className="bi fa-lg bi-x-lg"></i></div>
+                            <div style={{ cursor: "pointer", top: "10px", right: "20px", borderRadius: "0.3rem" }} className="btn btn-outline-dark position-absolute" data-bs-dismiss="modal" aria-label="close">
+                                <i className="bi fa-lg bi-x-lg"></i>
+                            </div>
                             <div className="modal-body-add col-12">
-                                {props.response === "Office" ? <AddOffice/> : <AddUser/>}
+                                {response === "Office" ? <AddOffice photos={photos} setPhotos={setPhotos} fileInputRef={fileInputRef} onSubmitOffice={onSubmitOffice} /> : <AddUser />}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-const AddOffice = () => {
+const AddOffice = ({ photos, setPhotos, fileInputRef, onSubmitOffice }) => {
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+
+        files.forEach(file => {
+            if (file.type.startsWith('image/') && (file.type.endsWith('jpeg') || file.type.endsWith('jpg') || file.type.endsWith('png'))) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setPhotos(prevPhotos => [...prevPhotos, { base64: reader.result, name: file.name }]);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("Можно добавлять только изображения форматов .png, .jpg, .jpeg.");
+                fileInputRef.current.value = "";
+            }
+        });
+    };
+
+    const handleRemovePhoto = (photoToRemove) => {
+        setPhotos(photos.filter(photo => photo !== photoToRemove));
+        const files = Array.from(fileInputRef.current.files);
+        const updatedFiles = new DataTransfer();
+
+        files.forEach(file => {
+            if (file.name !== photoToRemove.name) {
+                updatedFiles.items.add(file);
+            }
+        });
+
+        fileInputRef.current.files = updatedFiles.files;
+    };
 
     return (
         <>
             <div className="images d-flex flex-wrap">
-                <img src="https://mykaleidoscope.ru/uploads/posts/2021-03/1615549314_9-p-krasivii-ofis-10.jpg" className="d-block col-2 me-2 mt-2" alt="..."/>
-                <img src="https://mykaleidoscope.ru/uploads/posts/2021-03/1615549314_9-p-krasivii-ofis-10.jpg" className="d-block col-2 me-2 mt-2" alt="..."/>
-                <img src="https://mykaleidoscope.ru/uploads/posts/2021-03/1615549314_9-p-krasivii-ofis-10.jpg" className="d-block col-2 me-2 mt-2" alt="..."/>
+                {photos.map((photo, index) => (
+                    <div key={index} className="image-wrapper">
+                        <img src={photo.base64} className="d-block сol-4 col-lg-2 me-2 mt-2" alt={photo.name} />
+                        <div className="overlay" onClick={() => handleRemovePhoto(photo)}>
+                            <i className="bi bi-trash3 delete-icon"></i>
+                        </div>
+                    </div>
+                ))}
             </div>
-            <form id="addOffice" action="" method="post" className="mt-2">
+            <form onSubmit={onSubmitOffice} id="addOffice" className="mt-2">
                 <div className="modal-body-images">
                     <label htmlFor="formFileMultiple" className="form-label">Добавить фото <span className="text-danger">*</span></label>
-                    <input className="form-control" name="images" type="file" id="formFileMultiple" required multiple/>
+                    <input
+                        className="form-control"
+                        name="photos"
+                        type="file"
+                        id="formFileMultiple"
+                        accept=".png, .jpg, .jpeg"
+                        multiple
+                        onChange={handleFileChange}
+                        ref={fileInputRef}
+                        required
+                    />
                 </div>
                 <div className="modal-body-options my-2">
-                    <label for="input-name" class="form-label">Название <span className="text-danger">*</span></label>
-                    <input class="form-control" type="text" name="name" id="input-name" required></input>
+                    <label htmlFor="input-name" className="form-label">Название <span className="text-danger">*</span></label>
+                    <input className="form-control" type="text" name="name" id="input-name" required></input>
+                </div>
+                <div className="modal-body-address my-2">
+                    <label htmlFor="input-address" className="form-label">Адрес <span className="text-danger">*</span></label>
+                    <input className="form-control" type="text" name="address" id="input-address" required></input>
                 </div>
                 <div className="modal-body-options">
-                    <label for="textarea-options" class="form-label">Параметры объекта <span className="text-danger">*</span></label>
-                    <textarea class="form-control" name="options" id="textarea-options" rows="10" required></textarea>
+                    <label htmlFor="textarea-options" className="form-label">Параметры объекта <span className="text-danger">*</span></label>
+                    <textarea className="form-control" name="options" id="textarea-options" rows="10" required></textarea>
                 </div>
                 <div className="modal-body-description my-2">
-                    <label for="textarea-description" class="form-label">Описание <span className="text-danger">*</span></label>
-                    <textarea class="form-control" name="description" id="textarea-description" rows="10" required></textarea>
+                    <label htmlFor="textarea-description" className="form-label">Описание <span className="text-danger">*</span></label>
+                    <textarea className="form-control" name="description" id="textarea-description" rows="10" required></textarea>
                 </div>
-                <div className="modal-body-options">
-                    <label for="input-price" class="form-label">Цена<span className="text-danger">*</span></label>
-                    <input class="form-control" type="number" name="price" id="input-price" required></input>
+                <div className="modal-body-area">
+                    <label htmlFor="input-area" className="form-label">Площадь<span className="text-danger">*</span></label>
+                    <input className="form-control" type="number" step="any" name="area" id="input-area" required></input>
+                </div>
+                <div className="modal-body-price my-2">
+                    <label htmlFor="input-price" className="form-label">Цена<span className="text-danger">*</span></label>
+                    <input className="form-control" type="number" step="any" name="price" id="input-price" required></input>
                 </div>
                 <div className="modal-body-controls col-12 mt-3">
-                    <button type="submit" class="btn btn-success col-12">Добавить</button>
+                    <button type="submit" className="btn btn-success col-12">Добавить</button>
                 </div>
             </form>
         </>
-    )
-}
+    );
+};
 
 const AddUser = () => {
-
     return (
         <>
             <form className="d-flex flex-wrap justify-content-between" id="addUser" action="" method="post">
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="lastName">Фамилия <span className="text-danger">*</span></label>
-                    <input name="lastName" className="form-control col-12" type="text" placeholder="Иванов" required/>
+                    <input name="lastName" className="form-control col-12" type="text" placeholder="Иванов" required />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="firstName">Имя <span className="text-danger">*</span></label>
-                    <input name="firstName" className="form-control col-12" type="text" placeholder="Иван" required/>
+                    <input name="firstName" className="form-control col-12" type="text" placeholder="Иван" required />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="telephone">Номер <span className="text-danger">*</span></label>
@@ -80,15 +155,15 @@ const AddUser = () => {
                         pattern="[3][7][5][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}"
                         placeholder="375-XX-XXX-XX-XX"
                         required
-                        />
+                    />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="age">Возраст <span className="text-danger">*</span></label>
-                    <input name="age" className="form-control col-12" type="number" placeholder="XX" minLength={1} maxLength={3} required/>
+                    <input name="age" className="form-control col-12" type="number" placeholder="XX" minLength={1} maxLength={3} required />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="email">Почта <span className="text-danger">*</span></label>
-                    <input name="email" className="form-control col-12" type="email" placeholder="Example@gmail.com" required/>
+                    <input name="email" className="form-control col-12" type="email" placeholder="Example@gmail.com" required />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
@@ -107,7 +182,7 @@ const AddUser = () => {
                 </div>
             </form>
         </>
-    )
-}
+    );
+};
 
-export default AddModal
+export default AddModal;

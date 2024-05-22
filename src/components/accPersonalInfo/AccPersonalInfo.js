@@ -1,55 +1,116 @@
+import { useEffect, useState } from "react";
+import useServices from "../../services/Services";
+import Spinner from "../spinner/Spinner"
 
 import "./accPersonalInfo.scss"
 
 const AccPersonalInfo = () => {
+    const [userInfo, setUserInfo] = useState({
+        lastName: '',
+        firstName: '',
+        telephone: '',
+        age: '',
+        email: '',
+        password: ''
+    });
+    const [loading, setLoading] = useState(true)
+
+    const {getUserByToken, updateUserByToken} = useServices();
+
+    const onItemsLoading = () => {
+        getUserByToken(localStorage.getItem("token"))
+        .then(onItemsLoaded);
+    };
+
+    const onItemsLoaded = (data) => {
+        if (!data.detail) {
+            setUserInfo(data);
+        } else {
+            alert(data.detail);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        onItemsLoading();
+    }, []);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUserInfo({
+            ...userInfo,
+            [name]: value.trim()
+        });
+    };
+
+    const onSubmitChange = (e) => {
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        data.age = +data.age;
+    
+        console.log(data);
+        updateUserByToken(localStorage.getItem("token"), data);
+    }
 
     return (
-        <div className="personal-wrapper wrapper col-12 col-md-7 col-xxl-8 my-4 my-sm-1 my-lg-3 my-xl-4">
-            <form className="d-flex flex-wrap justify-content-between" id="personalInfo" action="" method="post">
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="lastName">Фамилия <span className="text-danger">*</span></label>
-                    <input name="lastName" className="form-control col-12" type="text" placeholder="Иванов" required/>
+        <>
+            {
+                loading ? 
+                <Spinner/>
+                :
+                <div className="personal-wrapper wrapper col-12 col-md-7 col-xxl-8 my-4 my-sm-1 my-lg-3 my-xl-4">
+                    <form onSubmit={onSubmitChange} className="d-flex flex-wrap justify-content-between" id="personalInfo" action="" method="post">
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="lastName">Фамилия <span className="text-danger">*</span></label>
+                            <input onChange={handleChange} name="lastName" className="form-control col-12" type="text" placeholder="Иванов" value={userInfo?.lastName} required/>
+                        </div>
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="firstName">Имя <span className="text-danger">*</span></label>
+                            <input onChange={handleChange} name="firstName" className="form-control col-12" type="text" placeholder="Иван" value={userInfo?.firstName} required/>
+                        </div>
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="telephone">Номер <span className="text-danger">*</span></label>
+                            <input
+                                onChange={handleChange}
+                                name="tel"
+                                className="form-control col-12"
+                                type="tel"
+                                pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
+                                placeholder="375-XX-XXX-XX-XX"
+                                value={userInfo?.tel}
+                                required
+                                />
+                        </div>
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="age">Возраст <span className="text-danger">*</span></label>
+                            <input onChange={handleChange} name="age" className="form-control col-12" type="number" placeholder="XX" minLength={1} maxLength={3} value={userInfo?.age} required/>
+                        </div>
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="email">Почта <span className="text-danger">*</span></label>
+                            <input onChange={handleChange} name="email" className="form-control col-12" type="email" placeholder="Example@gmail.com" value={userInfo?.email} required/>
+                        </div>
+                        <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
+                            <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
+                            <input
+                                onChange={handleChange}
+                                name="password"
+                                className="form-control col-12"
+                                type="password"
+                                minLength={8}
+                                maxLength={16}
+                                placeholder="Пароль"
+                                value={userInfo?.password}
+                                required
+                            />
+                        </div>
+                        <div className="form-controls text-center col-12 col-md-5 col-xxl-4 mt-4 px-2">
+                            <button className="btn btn-submit btn-success text-center col-12" type="submit">Сохранить</button>
+                        </div>
+                    </form>
                 </div>
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="firstName">Имя <span className="text-danger">*</span></label>
-                    <input name="firstName" className="form-control col-12" type="text" placeholder="Иван" required/>
-                </div>
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="telephone">Номер <span className="text-danger">*</span></label>
-                    <input
-                        name="telephone"
-                        className="form-control col-12"
-                        type="tel"
-                        pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
-                        placeholder="375-XX-XXX-XX-XX"
-                        required
-                        />
-                </div>
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="age">Возраст <span className="text-danger">*</span></label>
-                    <input name="age" className="form-control col-12" type="number" placeholder="XX" minLength={1} maxLength={3} required/>
-                </div>
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="email">Почта <span className="text-danger">*</span></label>
-                    <input name="email" className="form-control col-12" type="email" placeholder="Example@gmail.com" required/>
-                </div>
-                <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
-                    <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
-                    <input
-                        name="password"
-                        className="form-control col-12"
-                        type="password"
-                        minLength={8}
-                        maxLength={16}
-                        placeholder="Пароль"
-                        required
-                    />
-                </div>
-                <div className="form-controls text-center col-12 col-md-5 col-xxl-4 mt-4 px-2">
-                    <button className="btn btn-submit btn-success text-center col-12" type="submit">Сохранить</button>
-                </div>
-            </form>
-        </div>
+            }
+        </>
     )
 }
 

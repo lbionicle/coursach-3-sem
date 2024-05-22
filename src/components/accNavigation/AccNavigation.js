@@ -30,7 +30,7 @@ const UserNavigation = () => {
             )}
             </NavLink>
             <NavLink to={"/"}>
-                <li style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
+                <li onClick={() => localStorage.removeItem("token")} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
             </NavLink>
         </ul>
     )
@@ -46,7 +46,7 @@ const AdminNavigation = () => {
             </NavLink>
             <NavLink to={"/personal-account/personal-offices"}>
             {({ isActive }) => (
-                <li className={isActive ? "list-group-item list-active" : "list-group-item"}><i className="bi fa-lg bi-star me-1"></i>Добавленные офисы</li>
+                <li className={isActive ? "list-group-item list-active" : "list-group-item"}><i className="bi fa-lg bi-house-door me-1"></i>Офисы</li>
             )}  
             </NavLink>
             <NavLink to={"/personal-account/personal-applications"}>
@@ -61,7 +61,7 @@ const AdminNavigation = () => {
             </NavLink>
             <li className="list-group-item download-report"><i className="bi fa-lg bi-filetype-xlsx me-1"></i>Выгрузить отчёт</li>
             <NavLink to={"/"}>
-                <li style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
+                <li onClick={() => localStorage.removeItem("token")} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
             </NavLink>
         </ul>
     )

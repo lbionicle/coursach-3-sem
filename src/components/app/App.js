@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PersonalInfo, Applications, AddedOffices, Users, MainPage, AuthPage} from "../pages"
 
 const App = () => {
-  const [userRole, setUserRole] = useState("User")
+  
+  const [userRole, setUserRole] = useState("Usr")
 
   return (
     <Router>
