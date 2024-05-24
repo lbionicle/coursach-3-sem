@@ -1,8 +1,6 @@
 import AppHeader from "../appHeader/AppHeader"
 import AccNavigation from "../accNavigation/AccNavigation"
 import AccUsersList from "../accUsersList/AccUsersList"
-import ModalUser from "../modalUser/ModalUser"
-import AddModal from "../addModal/AddModal"
 import AppNotFound from "../appNotFound/AppNotFound"
 
 const Users = (props) => {
@@ -16,8 +14,6 @@ const Users = (props) => {
                         <AccNavigation userRole={props.userRole}/>
                         <AccUsersList/>
                     </div>
-                    <ModalUser/>
-                    <AddModal response={"Users"}/>
                 </>
                 :
                 <AppNotFound/>

@@ -2,14 +2,14 @@ import AppChat from "../appChat/AppChat"
 import AppNavbar from "../appNavbar/AppNavbar"
 import AppNotFound from "../appNotFound/AppNotFound"
 
-const MainPage = () => {
+const MainPage = ({useRole}) => {
 
     return (
         <>
             {localStorage.getItem("token") ? 
                 <>
                     <AppNavbar/>
-                    <AppChat/>
+                    <AppChat userRole={useRole}/>
                 </>
                 :
                 <AppNotFound/>

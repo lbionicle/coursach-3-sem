@@ -1,11 +1,11 @@
-import AuthUser from "../authUser/AuthUser"
+import AuthUser from "../authUser/AuthUser";
 
-const AuthPage = () => {
+const AuthPage = ({ setUserRole }) => {
     return (
         <>
-            <AuthUser/>
+            <AuthUser setUserRole={setUserRole} />
         </>
-    )
+    );
 }
 
-export default AuthPage
+export default AuthPage;

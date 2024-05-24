@@ -2,11 +2,11 @@ import { useState, useRef } from "react";
 import useServices from "../../services/Services";
 import "./addModal.scss";
 
-const AddModal = ({ setAddedOffice, response }) => {
+const AddModal = ({ response, fetchOffices, fetchUsers }) => {
     const [photos, setPhotos] = useState([]);
     const fileInputRef = useRef(null);
 
-    const { addOffice } = useServices();
+    const { addOffice, addUser } = useServices();
 
     const onSubmitOffice = (e) => {
         e.preventDefault();
@@ -16,8 +16,9 @@ const AddModal = ({ setAddedOffice, response }) => {
         data.area = +data.area;
         data.photos = photos.map(photo => photo.base64);
 
-        addOffice(data);
-        setAddedOffice(prev => !prev);
+        addOffice(data).then(() => {
+            fetchOffices();
+        });
 
         e.target.reset();
         setPhotos([]);
@@ -33,7 +34,7 @@ const AddModal = ({ setAddedOffice, response }) => {
                                 <i className="bi fa-lg bi-x-lg"></i>
                             </div>
                             <div className="modal-body-add col-12">
-                                {response === "Office" ? <AddOffice photos={photos} setPhotos={setPhotos} fileInputRef={fileInputRef} onSubmitOffice={onSubmitOffice} /> : <AddUser />}
+                                {response === "Office" ? <AddOffice photos={photos} setPhotos={setPhotos} fileInputRef={fileInputRef} onSubmitOffice={onSubmitOffice} /> : <AddUser fetchUsers={fetchUsers} />}
                             </div>
                         </div>
                     </div>
@@ -134,10 +135,32 @@ const AddOffice = ({ photos, setPhotos, fileInputRef, onSubmitOffice }) => {
     );
 };
 
-const AddUser = () => {
+const AddUser = ({ fetchUsers }) => {
+    const { register } = useServices();
+
+    const onSubmitUser = (e) => {
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        data.blocked = false;
+        data.admin = false;
+
+        register(data)
+        .then(() => {
+            alert("Пользователь добавлен");
+            e.target.reset();
+            fetchUsers();
+            const modalElement = document.getElementById("modalAdd");
+            const modal = window.bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+        }).catch(err => {
+            console.error("Error adding user:", err);
+        });
+    };
+
     return (
         <>
-            <form className="d-flex flex-wrap justify-content-between" id="addUser" action="" method="post">
+            <form className="d-flex flex-wrap justify-content-between" id="addUser" onSubmit={onSubmitUser}>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="lastName">Фамилия <span className="text-danger">*</span></label>
                     <input name="lastName" className="form-control col-12" type="text" placeholder="Иванов" required />
@@ -149,17 +172,17 @@ const AddUser = () => {
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="telephone">Номер <span className="text-danger">*</span></label>
                     <input
-                        name="telephone"
+                        name="tel"
                         className="form-control col-12"
                         type="tel"
-                        pattern="[3][7][5][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}"
+                        pattern="[3][7][5]-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}"
                         placeholder="375-XX-XXX-XX-XX"
                         required
                     />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="age">Возраст <span className="text-danger">*</span></label>
-                    <input name="age" className="form-control col-12" type="number" placeholder="XX" minLength={1} maxLength={3} required />
+                    <input name="age" className="form-control col-12" type="number" placeholder="XX" min={1} max={120} required />
                 </div>
                 <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                     <label htmlFor="email">Почта <span className="text-danger">*</span></label>

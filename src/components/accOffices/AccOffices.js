@@ -4,7 +4,7 @@ import Spinner from '../spinner/Spinner';
 import ModalOffice from '../modalOffice/ModalOffice';
 import "./accOffices.scss";
 
-const AccOffices = ({ addedOffice, userRole, offices, setOffices }) => {
+const AccOffices = ({ addedOffice, userRole, offices, setOffices, fetchOffices }) => {
     const { getOffices, getFavoriteOffices, deleteOfficeById, getOfficeById } = useServices();
     const [loading, setLoading] = useState(true);
     const [selectedOfficeId, setSelectedOfficeId] = useState(null);
@@ -96,7 +96,7 @@ const AccOffices = ({ addedOffice, userRole, offices, setOffices }) => {
                     </div>
                 ))
             )}
-            <ModalOffice officeId={selectedOfficeId} userRole={userRole} />
+            <ModalOffice fetchOffices={fetchOffices} officeId={selectedOfficeId} userRole={userRole} />
         </div>
     );
 };

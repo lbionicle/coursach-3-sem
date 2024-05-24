@@ -3,14 +3,14 @@ import useServices from '../../services/Services';
 import "./modalOffice.scss";
 import Spinner from '../spinner/Spinner';
 
-const ModalOffice = ({ officeId, userRole }) => {
+const ModalOffice = ({ officeId, userRole, fetchOffices }) => {
     const [officeInfo, setOfficeInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [favoriteOffices, setFavoriteOffices] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
-    const { getOfficeById, getFavoriteOffices, addFavoriteOffice } = useServices();
+    const { getOfficeById, getFavoriteOffices, addFavoriteOffice, addApplications, updateOfficeById } = useServices();
     const userToken = localStorage.getItem("token");
-
+    
     useEffect(() => {
         if (officeId) {
             setLoading(true);
@@ -41,7 +41,11 @@ const ModalOffice = ({ officeId, userRole }) => {
     }, [officeInfo, favoriteOffices]);
 
     const handleSendRequest = () => {
-        alert("Заявка отправлена");
+        addApplications(userToken, officeId).then(() => {
+            alert("Заявка отправлена");
+        }).catch(err => {
+            console.error("Error sending application:", err);
+        });
     };
 
     const handleAddToFavorites = () => {
@@ -65,7 +69,7 @@ const ModalOffice = ({ officeId, userRole }) => {
                         </div>
                         {loading ? (
                             <div className='text-center py-3'>
-                                <Spinner/>
+                                <Spinner />
                             </div>
                         ) : (
                             <div className="modal-body-office col-12">
@@ -77,7 +81,7 @@ const ModalOffice = ({ officeId, userRole }) => {
                                         isFavorite={isFavorite}
                                     />
                                 ) : (
-                                    <AdminModal officeInfo={officeInfo} />
+                                    <AdminModal fetchOffices={fetchOffices} officeInfo={officeInfo} updateOfficeById={updateOfficeById} />
                                 )}
                             </div>
                         )}
@@ -139,8 +143,7 @@ const UserModal = ({ officeInfo, onSendRequest, onAddToFavorites, isFavorite }) 
     );
 };
 
-const AdminModal = ({ officeInfo }) => {
-    const { updateOfficeById } = useServices();
+const AdminModal = ({ fetchOffices, officeInfo, updateOfficeById }) => {
     const [updatedOffice, setUpdatedOffice] = useState(officeInfo);
     const [photos, setPhotos] = useState([]);
     const fileInputRef = useRef(null);
@@ -192,7 +195,17 @@ const AdminModal = ({ officeInfo }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const updatedData = { ...updatedOffice, photos: photos.map(photo => photo.base64) };
-        updateOfficeById(updatedData.id, updatedData);
+
+        updateOfficeById(updatedData.id, updatedData)
+        .then((json) => {
+            fetchOffices();
+            json.message ? alert(json.message) : alert(json.detail);
+
+            e.target.reset();
+            setPhotos([]);
+        }).catch(err => {
+            console.error("Error updating office:", err);
+        });
     };
 
     return (
@@ -214,8 +227,18 @@ const AdminModal = ({ officeInfo }) => {
             </div>
             <form id="updateModal" onSubmit={handleSubmit} className="mt-2">
                 <div className="modal-body-images">
-                    <label htmlFor="formFileMultiple" className="form-label">Добавить фото</label>
-                    <input className="form-control" name="photos" type="file" id="formFileMultiple" accept=".png, .jpg, .jpeg" multiple onChange={handleFileChange} ref={fileInputRef} />
+                    <label htmlFor="formFileMultiple" className="form-label">Добавить фото <span className="text-danger">*</span></label>
+                    <input
+                        className="form-control"
+                        name="photos"
+                        type="file"
+                        id="formFileMultiple"
+                        accept=".png, .jpg, .jpeg"
+                        multiple
+                        onChange={handleFileChange}
+                        ref={fileInputRef} 
+                        required
+                    />
                 </div>
                 <div className="modal-body-options my-2">
                     <label htmlFor="input-name" className="form-label">Название <span className="text-danger">*</span></label>
