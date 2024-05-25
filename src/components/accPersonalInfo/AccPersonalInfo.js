@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+
 import useServices from "../../services/Services";
+import NavPassword from "../navPassword/NavPassword";
 import Spinner from "../spinner/Spinner"
 
 import "./accPersonalInfo.scss"
@@ -92,15 +94,13 @@ const AccPersonalInfo = () => {
                         </div>
                         <div className="input-container col-12 col-md-5 col-xxl-4 p-2">
                             <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
-                            <input
-                                onChange={handleChange}
+                            <NavPassword
                                 name="password"
-                                className="form-control col-12"
-                                type="password"
+                                placeholder="Пароль"
                                 minLength={8}
                                 maxLength={16}
-                                placeholder="Пароль"
                                 value={userInfo?.password}
+                                onChange={handleChange}
                                 required
                             />
                         </div>

@@ -3,7 +3,7 @@ const useServices = () => {
     const _apiBase = "http://192.168.100.9:8000";
 
     const getResources = async (url) => {
-        let res = await fetch(url);
+        let res = await fetch(url, {headers: new Headers({'Content-Type': 'application/json', 'x-admin-token': localStorage.getItem("token")})});
 
         if (!res.ok) {
             throw new Error(`Could not fetch ${url}, status: ${res.status}`);
@@ -19,6 +19,7 @@ const useServices = () => {
             mode: 'cors',
             headers: new Headers({
                 'Content-Type': 'application/json',
+                'x-admin-token': localStorage.getItem("token")
             }),
         });
 
@@ -99,6 +100,14 @@ const useServices = () => {
         return getResources(`${_apiBase}/users/${token}/role`);
     }
 
+    const searchUsersByPhone = (phone) => {
+        return getResources(`${_apiBase}/users/search/${phone}`);
+    }
+
+    const searchOffices = (query) => {
+        return getResources(`${_apiBase}/offices/search/${query}`);
+    }
+
     const updateOfficeById = async(id, json) => {
         return await sendData(`${_apiBase}/office/${id}`, json, "PUT")
     };
@@ -126,8 +135,12 @@ const useServices = () => {
     };    
 
     const deleteOfficeById = (id) => {
-        sendData(`${_apiBase}/office/${id}`, null, "DELETE")
+        return sendData(`${_apiBase}/office/${id}`, null, "DELETE")
     };
+
+    const deleteFavoriteOffice = (token, officeId) => {
+        return sendData(`${_apiBase}/user/${token}/favorite/${officeId}`, null, "DELETE")
+    }
 
     const deleteUserByToken = (token) => {
         sendData(`${_apiBase}/users/${token}`, null, "DELETE")
@@ -144,6 +157,23 @@ const useServices = () => {
     const deleteApplicationById = (app_id) => {
         return sendData(`${_apiBase}/applications/${app_id}`, null, "DELETE")
     }
+
+    const downloadReport = async () => {
+        const response = await fetch(`${_apiBase}/export/report/pdf`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+                'x-admin-token': localStorage.getItem("token")
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Could not fetch report');
+        }
+
+        const blob = await response.blob();
+        return blob;
+    };
 
     return {
         login,
@@ -169,7 +199,11 @@ const useServices = () => {
         getOfficeByOptions,
         getRoleByToken,
         getApplicationsByToken,
-        deleteApplicationById
+        deleteApplicationById,
+        deleteFavoriteOffice,
+        searchUsersByPhone,
+        searchOffices,
+        downloadReport
     };
 };
 

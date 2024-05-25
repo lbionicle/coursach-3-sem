@@ -1,17 +1,31 @@
-import { NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom";
+import { saveAs } from 'file-saver';
+
+import useServices from "../../services/Services";
 
 import "./accNavigation.scss"
 
-const AccNavigation = (props) => {
+const AccNavigation = ({onLogout, userRole}) => {
+
+    const {downloadReport} = useServices();
+
+    const handleDownload = async () => {
+        try {
+            const blob = await downloadReport();
+            saveAs(blob, 'report.pdf');
+        } catch (error) {
+            console.error('Error downloading report:', error);
+        }
+    };
 
     return (
         <>
-            {props.userRole === "User" ? <UserNavigation/> : <AdminNavigation/>}
+            {userRole === "User" ? <UserNavigation onLogout={onLogout}/> : <AdminNavigation handleDownload={handleDownload} onLogout={onLogout}/>}
         </>
     )
 }
 
-const UserNavigation = () => {
+const UserNavigation = ({onLogout}) => {
     return (
         <ul className="list-group list-group-flush col-12 col-md-4 col-xxl-3 my-1 my-lg-3 my-xl-4">
             <NavLink to={"/personal-account/personal-info"}>
@@ -30,13 +44,13 @@ const UserNavigation = () => {
             )}
             </NavLink>
             <NavLink to={"/"}>
-                <li onClick={() => localStorage.removeItem("token")} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
+                <li onClick={onLogout} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
             </NavLink>
         </ul>
     )
 }
 
-const AdminNavigation = () => {
+const AdminNavigation = ({onLogout, handleDownload}) => {
     return (
         <ul className="list-group list-group-flush col-12 col-md-4 col-xxl-3 my-1 my-lg-3 my-xl-4">
             <NavLink to={"/personal-account/personal-info"}>
@@ -59,9 +73,9 @@ const AdminNavigation = () => {
                 <li className={isActive ? "list-group-item list-active" : "list-group-item"}><i className="bi fa-lg bi-people me-1"></i>Пользователи</li>
             )}
             </NavLink>
-            <li className="list-group-item download-report"><i className="bi fa-lg bi-filetype-xlsx me-1"></i>Выгрузить отчёт</li>
+            <li onClick={handleDownload} className="list-group-item download-report"><i className="bi fa-lg bi-filetype-xlsx me-1"></i>Выгрузить отчёт</li>
             <NavLink to={"/"}>
-                <li onClick={() => localStorage.removeItem("token")} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
+                <li onClick={onLogout} style={{border : "none"}} className="list-group-item text-danger"><i className="bi fa-lg bi-box-arrow-right me-1"></i>Выйти</li>
             </NavLink>
         </ul>
     )

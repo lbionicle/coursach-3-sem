@@ -41,12 +41,10 @@ const ModalOffice = ({ officeId, userRole, fetchOffices }) => {
     }, [officeInfo, favoriteOffices]);
 
     const handleSendRequest = () => {
-        addApplications(userToken, officeId).then(() => {
-            alert("Заявка отправлена");
-        }).catch(err => {
-            console.error("Error sending application:", err);
-        });
-    };
+        addApplications(userToken, officeId).then((json) => {
+            alert(json.detail);
+        })
+    }
 
     const handleAddToFavorites = () => {
         if (!isFavorite) {
@@ -133,7 +131,7 @@ const UserModal = ({ officeInfo, onSendRequest, onAddToFavorites, isFavorite }) 
                     Отправить заявку
                 </div>
                 <div
-                    className={`btn modal-controls-addoffice py-2 ${isFavorite ? 'btn-warning disabled' : 'btn-outline-dark'}`}
+                    className={`btn btn-outline-dark modal-controls-addoffice py-2 ${isFavorite ? 'disabled' : ''}`}
                     onClick={onAddToFavorites}
                 >
                     <i className="bi fa-lg bi-star"></i>

@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import AppHeader from "../appHeader/AppHeader";
 import AccNavigation from "../accNavigation/AccNavigation";
 import AccOffices from "../accOffices/AccOffices";
-import ModalOffice from "../modalOffice/ModalOffice";
 import AddModal from "../addModal/AddModal";
 import AppNotFound from "../appNotFound/AppNotFound";
 import useServices from "../../services/Services";
 
-const AddedOffices = (props) => {
+const AddedOffices = ({userRole, onLogout}) => {
     const { getOffices } = useServices();
     const [offices, setOffices] = useState([]);
     const [addedOffice, setAddedOffice] = useState(false);
@@ -27,8 +26,8 @@ const AddedOffices = (props) => {
                 <>
                     <AppHeader/>
                     <div className="d-flex flex-wrap justify-content-between align-items-start col-11 m-auto">
-                        <AccNavigation userRole={props.userRole}/>
-                        <AccOffices fetchOffices={fetchOffices} addedOffice={addedOffice} offices={offices} setOffices={setOffices} userRole={props.userRole}/>
+                        <AccNavigation userRole={userRole} onLogout={onLogout}/>
+                        <AccOffices fetchOffices={fetchOffices} addedOffice={addedOffice} offices={offices} setOffices={setOffices} userRole={userRole}/>
                     </div>
                     <AddModal response={"Office"} fetchOffices={fetchOffices} />
                 </>

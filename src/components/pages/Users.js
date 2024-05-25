@@ -3,7 +3,7 @@ import AccNavigation from "../accNavigation/AccNavigation"
 import AccUsersList from "../accUsersList/AccUsersList"
 import AppNotFound from "../appNotFound/AppNotFound"
 
-const Users = (props) => {
+const Users = ({userRole, onLogout}) => {
 
     return (
         <>
@@ -11,7 +11,7 @@ const Users = (props) => {
                 <>
                     <AppHeader/>
                     <div className="d-flex flex-wrap justify-content-between align-items-start col-11 m-auto">
-                        <AccNavigation userRole={props.userRole}/>
+                        <AccNavigation onLogout={onLogout} userRole={userRole}/>
                         <AccUsersList/>
                     </div>
                 </>

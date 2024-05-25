@@ -4,7 +4,7 @@ import Spinner from "../spinner/Spinner";
 import "./accApplications.scss";
 
 const AccApplications = (props) => {
-    const { getApplications, getApplicationsByToken, getUserByToken, updateApplication, deleteApplicationById, getOfficeById, getUserById } = useServices();
+    const { getApplications, getApplicationsByToken, getUserByToken, updateApplication, getOfficeById, getUserById } = useServices();
     const [applications, setApplications] = useState([]);
     const [filterStatus, setFilterStatus] = useState("all");
     const [loading, setLoading] = useState(true);
@@ -35,6 +35,7 @@ const AccApplications = (props) => {
                     setApplications([]);
                 } else {
                     setApplications(data);
+                    console.log(data)
                     fetchUsersInfo(data);
                 }
                 setLoading(false);
@@ -74,20 +75,12 @@ const AccApplications = (props) => {
     const handleStatusChange = (appId, statusId) => {
         updateApplication(appId, statusId).then(() => {
             alert(statusId === 2 ? "Заявка одобрена" : "Заявка отменена");
-            fetchApplications(); // Обновление списка после изменения статуса
+            fetchApplications();
         }).catch(err => {
             console.error("Error updating application:", err);
         });
     };
 
-    const handleDeleteApplication = (appId) => {
-        deleteApplicationById(appId).then(() => {
-            alert("Заявка удалена");
-            fetchApplications(); // Обновление списка после удаления заявки
-        }).catch(err => {
-            console.error("Error deleting application:", err);
-        });
-    };
 
     const handleFilterChange = (e) => {
         setFilterStatus(e.target.value);
@@ -104,7 +97,15 @@ const AccApplications = (props) => {
         });
     };
 
-    const filteredApplications = Array.isArray(applications) ? applications.filter(app => {
+    const sortApplications = (apps) => {
+        return apps.sort((a, b) => {
+            if (a.status === 1 && b.status !== 1) return -1;
+            if (a.status !== 1 && b.status === 1) return 1;
+            return 0;
+        });
+    };
+
+    const filteredApplications = Array.isArray(applications) ? sortApplications(applications).filter(app => {
         if (filterStatus === "all") return true;
         if (filterStatus === "inProcess" && app.status === 1) return true;
         if (filterStatus === "cancelled" && app.status === 0) return true;
@@ -140,9 +141,9 @@ const AccApplications = (props) => {
 
     return (
         <>
-            <div className="application-wrapper wrapper col-12 col-md-7 col-xxl-8 my-4 my-sm-1 my-lg-3 my-xl-4">
+            <div className="application-wrapper col-12 col-md-7 col-xxl-8 my-4 my-sm-1 my-lg-3 my-xl-4">
                 <div className="filter col-12">
-                    <select onChange={handleFilterChange} className="form-select" aria-label="Default select example">
+                    <select onChange={handleFilterChange} className="form-select rounded-0" aria-label="Default select example">
                         <option value="all">Все</option>
                         <option value="inProcess">В процессе</option>
                         <option value="cancelled">Отменена</option>
@@ -155,12 +156,12 @@ const AccApplications = (props) => {
                     </div>
                 ) : (
                     filteredApplications.length === 0 ? (
-                        <div className="text-center mt-4">
+                        <div className="wrapper text-center mt-2">
                             <h5>Заявок нет</h5>
                         </div>
                     ) : (
                         filteredApplications.map(app => (
-                            <div key={app.id} className="wrapper-application col-12 d-flex flex-wrap align-items-start justify-content-between">
+                            <div key={app.id} className="wrapper-application wrapper col-12 d-flex flex-wrap align-items-start justify-content-between">
                                 <div className="wrapper-application-id col-5 col-xxl-1 pe-2 pb-2">
                                     <h6>ID:</h6>
                                     <h5>{app.id}</h5>
@@ -211,23 +212,21 @@ const AccApplications = (props) => {
                                             <h6>Статус:</h6>
                                             <h5 style={{ textDecoration: "underline" }}>{getStatusText(app.status)}</h5>
                                         </div>
-                                        {app.status === 1 ? (
+                                        {app.status === 1 && (
                                             <div className="wrapper-application-controls col-12 col-xxl-1 text-start">
                                                 <div
                                                     className="btn btn-outline-danger my-2 rounded-0 col-12 col-xxl-8"
-                                                    onClick={() => handleDeleteApplication(app.id)} 
+                                                    onClick={() => handleStatusChange(app.id, 0)} 
                                                 >
                                                     <i className="bi fa-lg bi-x-lg"></i>
                                                 </div>
                                             </div>
-                                        ) : (
-                                            <div className="wrapper-application-controls col-12 col-xxl-1 text-start"></div>
                                         )}
                                     </>
                                     :
                                     <>
                                         {app.status === 1 ? (
-                                            <div className="wrapper-application-controls col-7 col-xxl-3 text-start text-xxl-center py-2">
+                                            <div className="wrapper-application-controls col-7 col-xxl-3 text-start py-2">
                                                 <div
                                                     className="btn btn-submit-application btn-outline-success rounded-0 col-4 col-sm-3 col-xxl-4"
                                                     onClick={() => handleStatusChange(app.id, 2)}>

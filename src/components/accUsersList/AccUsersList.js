@@ -3,14 +3,16 @@ import useServices from "../../services/Services";
 import ModalUser from "../modalUser/ModalUser";
 import AddModal from "../addModal/AddModal";
 import Spinner from "../spinner/Spinner";
+import ReactStringReplace from "react-string-replace";
 
 import "./accUsersList.scss";
 
 const AccUsersList = () => {
-    const { getUsers, deleteUserById } = useServices();
+    const { getUsers, deleteUserById, searchUsersByPhone } = useServices();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         fetchUsers();
@@ -52,8 +54,39 @@ const AccUsersList = () => {
         setSelectedUserId(userId);
     };
 
+    const handleSearch = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        if (query === "") {
+            fetchUsers();
+        } else {
+            searchUsersByPhone(query).then(data => {
+                setUsers(data);
+            }).catch(err => {
+                console.error("Error searching users:", err);
+            });
+        }
+    };
+
+    const highlightText = (text, highlight) => {
+        if (!highlight.trim()) {
+            return text;
+        }
+        const regex = new RegExp(`(${highlight})`, "gi");
+        return ReactStringReplace(text, regex, (match, i) => (
+            <span key={i} style={{ backgroundColor: "orange" }}>{match}</span>
+        ));
+    };
+
     return (
         <div className="users col-12 col-md-7 col-xxl-8 my-4 my-sm-1 my-lg-3 my-xl-4">
+            <input
+                type="text"
+                className="form-control col-12 mb-2 rounded-0"
+                placeholder="Искать пользователя по номеру телефона"
+                value={searchQuery}
+                onChange={handleSearch}
+            />
             <div className="btn btn-outline-dark user-add col-12 py-1 rounded-0" data-bs-toggle="modal" data-bs-target="#modalAdd">
                 <i className="bi bi-plus-lg"></i>
             </div>
@@ -72,7 +105,7 @@ const AccUsersList = () => {
                             <div className="wrapper-user col-12 d-flex flex-wrap align-items-start justify-content-between">
                                 <div className="wrapper-user-id col-12 col-md-6 col-xxl-1 py-2 py-xxl-0 px-2">
                                     <h6>Id:</h6>
-                                    <h5>{user.id}</h5>  
+                                    <h5>{user.id}</h5>
                                 </div>
                                 <div className="wrapper-user-email col-12 col-md-6 col-xxl-3 py-2 py-xxl-0 px-2">
                                     <h6>Почта:</h6>
@@ -80,7 +113,7 @@ const AccUsersList = () => {
                                 </div>
                                 <div className="wrapper-user-phone col-12 col-md-6 col-xxl-3 py-2 py-xxl-0 px-2">
                                     <h6>Моб. тел:</h6>
-                                    <h5>{user.tel}</h5>
+                                    <h5>{highlightText(user.tel, searchQuery)}</h5>
                                 </div>
                                 <div className={`wrapper-user-activity col-12 col-md-6 col-xxl-3 py-2 py-xxl-0 px-2 ${getStatusClass(user.blocked)}`}>
                                     <h6>Статус:</h6>
@@ -101,7 +134,6 @@ const AccUsersList = () => {
             )}
             <ModalUser userId={selectedUserId} fetchUsers={fetchUsers} />
             <AddModal fetchUsers={fetchUsers} response={"Users"}/>
-
         </div>
     );
 };

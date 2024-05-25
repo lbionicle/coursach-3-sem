@@ -1,9 +1,9 @@
 import AuthUser from "../authUser/AuthUser";
 
-const AuthPage = ({ setUserRole }) => {
+const AuthPage = ({ onLogin }) => {
     return (
         <>
-            <AuthUser setUserRole={setUserRole} />
+            <AuthUser onLogin={onLogin}/>
         </>
     );
 }

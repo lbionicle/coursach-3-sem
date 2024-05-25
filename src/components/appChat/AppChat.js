@@ -23,7 +23,6 @@ const AppChat = ({ userRole }) => {
     const [buttons, setButtons] = useState(null);
     const [currentMessage, setCurrentMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const [offices, setOffices] = useState([]);
     const [selectedOfficeId, setSelectedOfficeId] = useState(null);
 
     const typingRef = useRef(false);
@@ -171,7 +170,7 @@ const AppChat = ({ userRole }) => {
         setButtons(null);
         setChatMessages(chatMessages => [
             ...chatMessages,
-            ...renderMessage([{ role: "User", message: <>Минимальная площадь: {minArea} м²<br />Максимальная площадь: {maxArea} м²<br />Минимальная цена: {minPrice}<br />Максимальная цена: {maxPrice}<br /></>}, {role: "Chat", message: "Результаты поиска"}]),
+            ...renderMessage([{ role: "User", message: <>Минимальная площадь: {minArea} м²<br />Максимальная площадь: {maxArea} м²<br />Минимальная цена: {minPrice}<br />Максимальная цена: {maxPrice}<br /></>}, {role: "Chat", message: "Результаты поиска:"}]),
         ]);
 
         getOfficeByOptions({ minArea, maxArea, minPrice, maxPrice })
@@ -190,7 +189,7 @@ const AppChat = ({ userRole }) => {
     };
 
     const renderOffices = (offices) => {
-        const officeElements = offices.map((office) => (
+        const officeElements = Array.isArray(offices) ? offices?.map((office) => (
             <div className="alert alert-light col-12 text-start" key={office.id}>
                 <div className="offices-wrapper">
                     <div className="wrapper-office col-12 d-flex flex-wrap">
@@ -217,7 +216,7 @@ const AppChat = ({ userRole }) => {
                     </div>
                 </div>
             </div>
-        ));
+        )) : renderMessage([{role: "Chat", message: "По данным параметрам нет офисов!"}]);
 
         return officeElements
     };

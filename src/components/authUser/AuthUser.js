@@ -1,25 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NavPassword from "../navPassword/NavPassword";
 import useServices from "../../services/Services";
 import "./authUser.scss";
 
-const AuthUser = ({ setUserRole }) => {
+const AuthUser = ({ onLogin }) => {
     const [stage, setStage] = useState("login");
     const { login, register } = useServices();
-    
     const navigate = useNavigate();
 
     const regUser = (e) => {
         e.preventDefault();
-        
         const data = Object.fromEntries(new FormData(e.target).entries());
         data.age = +data.age;
-        console.log(data);
         register(data)
         .then(json => {
             if (!json.detail) {
                 localStorage.setItem("token", json.token);
-                setUserRole(json.admin ? "Admin" : "User");
+                onLogin("User");
                 navigate("/main-page");
             } else {
                 alert(json.detail);
@@ -30,13 +28,12 @@ const AuthUser = ({ setUserRole }) => {
 
     const loginUser = (e) => {
         e.preventDefault();
-        
         const data = Object.fromEntries(new FormData(e.target).entries());
         login(data)
         .then(json => {
             if (!json.detail) {
                 localStorage.setItem("token", json.token);
-                setUserRole(json.admin ? "Admin" : "User");
+                onLogin(json.role);
                 navigate("/main-page");
             } else {
                 alert(json.detail);
@@ -73,13 +70,11 @@ const Login = (props) => {
             <label htmlFor="email">Почта <span className="text-danger">*</span></label>
             <input name="email" className="form-control" type="email" placeholder="Example@gmail.com" required />
             <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
-            <input
+            <NavPassword
                 name="password"
-                className="form-control"
-                type="password"
+                placeholder="Пароль"
                 minLength={8}
                 maxLength={16}
-                placeholder="Пароль"
                 required
             />
             <div className="form-controls w-100 text-center mt-4">
@@ -110,13 +105,11 @@ const Register = (props) => {
             <label htmlFor="email">Почта <span className="text-danger">*</span></label>
             <input name="email" className="form-control" type="email" placeholder="Example@gmail.com" required />
             <label htmlFor="password">Пароль <span className="text-danger">*</span></label>
-            <input
+            <NavPassword
                 name="password"
-                className="form-control"
-                type="password"
+                placeholder="Пароль"
                 minLength={8}
                 maxLength={16}
-                placeholder="Пароль"
                 required
             />
             <div className="form-controls w-100 text-center mt-4">
